@@ -1,6 +1,6 @@
-function kernel(xi::SVector, xj::SVector{3,T}, mom_avg::SVector{3,T}) where {T}
+function kernel(xi::SVector, xj::SVector{3,T}, pj::SVector{3,T}) where {T}
     xij = xi - xj
-    return xij / sqrt(dot(xij, xij) + dot(mom_avg, xij)^2 + eps())^3
+    return xij / sqrt(dot(xij, xij) + dot(pj, xij)^2 + eps())^3
 end
 
 function admissible(x::SVector{3,T}, bbox::BBox{T}; ita::T) where {T}
@@ -41,11 +41,11 @@ function cluster_field(x::SVector{3,T}, cluster::Cluster{T}, particles::Particle
         gamma_hat = cluster.gamma_hat
         mom_hat = cluster.mom_hat
         for k in 1:(n+1)
+            sz = zcoords[k]
             for j in 1:(n+1)
+                sy = ycoords[j]
                 for i in 1:(n+1)
                     sx = xcoords[i]
-                    sy = ycoords[j]
-                    sz = zcoords[k]
                     K = kernel(x, SVector(sx,sy,sz),mom_avg)
                     efield += gamma_hat[i,j,k]*K
                     bfield += cross(mom_hat[i,j,k],K)
@@ -65,28 +65,28 @@ end
 function update_particle_field!(particles::Particles; n, ita, threshold, lambda) where {T}
     q = particles.charge
     mom_avg = sum(particles.momentums) / particles.npar
-    ct = ClusterTree(particles; threshold=threshold)
-    for i in 1:particles.npar
+    ct = ClusterTree(particles; n=n, threshold=threshold)
+    @inbounds for i in 1:particles.npar
         x = particles.positions[i]
         (efield, bfield) = cluster_field(x, ct.root, particles, ct.parindices, mom_avg; n=n, ita=ita)
-        particles.self_efields[i] = 2.8179403699772166e-15 * q / lambda * efield
-        particles.self_bfields[i] = 2.8179403699772166e-15 * q / lambda * bfield
+        particles.self_efields[i] = (2.8179403699772166e-15 * q / lambda) * efield
+        particles.self_bfields[i] = (2.8179403699772166e-15 * q / lambda) * bfield
     end
 end
 
-function update_particle_field_brutal!(beam::Particles; lambda)
-    q = beam.charge
-    @inbounds for i in 1:beam.npar
-        beam.self_efields[i] = SVector(0.0, 0.0, 0.0)
-        beam.self_bfields[i] = SVector(0.0, 0.0, 0.0)
-        xi = beam.positions[i]
-        for j in 1:beam.npar
-            xj = beam.positions[j]
-            pj = beam.momentums[j]
-            xij = xi - xj
-            kernel = xij / sqrt(dot(xij, xij) + dot(pj, xij)^2 + eps())^3
-            beam.self_efields[i] += 2.8179403699772166e-15 * q / lambda * sqrt(1.0 + dot(pj, pj)) * kernel
-            beam.self_bfields[i] += 2.8179403699772166e-15 * q / lambda * cross(pj, kernel)
+function update_particle_field_brutal!(particles::Particles; lambda)
+    q = particles.charge
+    npar = particles.npar
+    @inbounds for i in 1:npar
+        particles.self_efields[i] = SVector(0.0, 0.0, 0.0)
+        particles.self_bfields[i] = SVector(0.0, 0.0, 0.0)
+        xi = particles.positions[i]
+        for j in 1:particles.npar
+            xj = particles.positions[j]
+            pj = particles.momentums[j]
+            K = kernel(xi, xj, pj)
+            particles.self_efields[i] += 2.8179403699772166e-15 * q / lambda * sqrt(1.0 + dot(pj, pj)) * K
+            particles.self_bfields[i] += 2.8179403699772166e-15 * q / lambda * cross(pj, K)
         end
     end
 end

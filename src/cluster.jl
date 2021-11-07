@@ -177,7 +177,7 @@ end
 
 function split_median!(parindices::Vector{Int}, pos::AbstractVector{SVector{3,T}}, dim, lo, hi) where {T}
     k = floor(Int, (lo + hi) / 2.0)
-            while true
+    while true
         if lo == hi
             return lo
         end
@@ -189,9 +189,9 @@ function split_median!(parindices::Vector{Int}, pos::AbstractVector{SVector{3,T}
             hi = pindex - 1
         else
             lo = pindex + 1
+        end
     end
-    end
-    end
+end
 
 
 ###

@@ -11,6 +11,8 @@ module NChargedBodyTreecode
     
     include("particles.jl")
     include("cluster.jl")
+    include("cluster2p.jl")
     include("update_particles_field.jl")
+    include("force_kernel.jl")
     include("relativity.jl")
 end # module

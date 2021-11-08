@@ -168,9 +168,9 @@ pval = pos[parindices[pindex]][dim]
     for i in lo:(hi - 1)
         if pos[parindices[i]][dim] < pval
             @swap!(parindices[j], parindices[i])
-j = j + 1
+            j = j + 1
         end
-        end
+    end
     @swap!(parindices[hi], parindices[j])
     return j
 end

@@ -22,7 +22,7 @@ function cluster2p_brutal(x::SVector{3,T}, particles::Particles, parindices::Vec
     return efield, bfield
 end
 
-function cluster2p(x::SVector{3,T}, cluster::Cluster{T}, particles::Particles, parindices::Vector{Int64}; n, ita) where {T}
+function cluster2p(x::SVector{3,T}, cluster::Cluster{T}, particles::Particles, parindices::Vector{Int64}, p_avg; n, ita) where {T}
     efield = SVector(0.0,0.0,0.0)
     bfield = SVector(0.0,0.0,0.0)
     if cluster.children === nothing
@@ -42,15 +42,15 @@ function cluster2p(x::SVector{3,T}, cluster::Cluster{T}, particles::Particles, p
                 for i in 1:(n+1)
                     sx = xcoords[i]
                     p_hat = mom_hat[i,j,k]
-                    K = kernel_relativity(x, SVector(sx,sy,sz), p_hat)
+                    K = kernel_relativity(x, SVector(sx,sy,sz), p_avg)
                     efield += gamma_hat[i,j,k]*K
                     bfield += cross(p_hat, K)
                 end
             end
         end
     else
-        efield1, bfield1 = cluster2p(x, cluster.children[1], particles, parindices; n=n, ita=ita)
-        efield2, bfield2 = cluster2p(x, cluster.children[2], particles, parindices; n=n, ita=ita)
+        efield1, bfield1 = cluster2p(x, cluster.children[1], particles, parindices, p_avg; n=n, ita=ita)
+        efield2, bfield2 = cluster2p(x, cluster.children[2], particles, parindices, p_avg; n=n, ita=ita)
         efield = efield1 + efield2
         bfield = bfield1 + bfield2
     end

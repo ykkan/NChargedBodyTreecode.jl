@@ -35,7 +35,7 @@ function find_bbox(pos::AbstractVector{SVector{3,T}}, parindices::Vector{Int}, l
         (x, y, z) = pos[parindices[i]]
         xmin = x < xmin ? x : xmin
         xmax = x > xmax ? x : xmax
-    ymin = y < ymin ? y : ymin
+        ymin = y < ymin ? y : ymin
         ymax = y > ymax ? y : ymax
         zmin = z < zmin ? z : zmin
         zmax = z > zmax ? z : zmax
@@ -151,15 +151,15 @@ function print_bbox(cluster::Cluster{T}) where {T}
     children = cluster.children
     if children !== nothing
         print_bbox(children[1])
-    print_bbox(children[2])
+        print_bbox(children[2])
     end
 end
 
 macro swap!(a, b)
-            return quote
+    return quote
         $(esc(a)), $(esc(b)) = $(esc(b)), $(esc(a))
-        end
     end
+end
 
 function partition!(parindices::Vector{Int}, pos::AbstractVector{SVector{3,T}}, dim, lo, hi, pindex) where {T}
 pval = pos[parindices[pindex]][dim]
@@ -191,24 +191,4 @@ function split_median!(parindices::Vector{Int}, pos::AbstractVector{SVector{3,T}
             lo = pindex + 1
         end
     end
-end
-
-
-###
-struct ClusterTree{T}
-    npar::Int64
-    parindices::Vector{Int64}
-    root::Cluster{T}
-end
-
-
-function ClusterTree(particles::Particles; n, threshold) where {T}
-    npar = particles.npar
-    parindices = [1:npar;]
-    root = make_cluster(particles, parindices, 1, npar, 1; n=n, threshold=threshold)
-    return ClusterTree(npar, parindices, root)
-end
-
-function print_bbox(ct::ClusterTree{T}) where {T}
-    print_bbox(ct.root)
 end

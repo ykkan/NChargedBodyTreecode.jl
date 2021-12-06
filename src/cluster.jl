@@ -124,16 +124,16 @@ function cluster_weight(particles::Particles, parindices::Vector{Int}, lo, hi, b
     return gamma_hat, mom_hat
 end
 
-function make_cluster(particles::Particles{T}, parindices::Vector{Int}, lo, hi, level; n, threshold) where {T}
+function make_cluster(particles::Particles{T}, parindices::Vector{Int}, lo, hi, level; n, threshold, stretch=SVector(1.0,1.0,1.0)) where {T}
     npar = (hi - lo + 1)
     pos = particles.positions
     bbox = find_bbox(pos, parindices, lo, hi)
     if npar <= threshold
         return Cluster(level, npar, bbox, lo, nothing, nothing, nothing, nothing, nothing, nothing)
     else
-        split_dim = argmax(bbox.bmax - bbox.bmin)
+        split_dim = argmax( stretch .* (bbox.bmax - bbox.bmin) )
         k = split_median!(parindices, pos, split_dim, lo, hi)
-        children = (make_cluster(particles, parindices, lo, k, level + 1; n=n, threshold=threshold), make_cluster(particles, parindices, k + 1, hi, level + 1; n=n, threshold=threshold))
+        children = (make_cluster(particles, parindices, lo, k, level + 1; n=n, threshold=threshold, stretch=stretch), make_cluster(particles, parindices, k + 1, hi, level + 1; n=n, threshold=threshold, stretch=stretch))
         xcoords, ycoords, zcoords = cluster_coord(bbox; n=n)
         gamma_hat, mom_hat = cluster_weight(particles, parindices, lo, hi, bbox; n=n)
         return Cluster(level, npar, bbox, lo, xcoords, ycoords, zcoords, gamma_hat, mom_hat, children)

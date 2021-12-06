@@ -6,7 +6,8 @@ module NChargedBodyTreecode
 
     export Particles
     export ClusterTree, num_cluster
-    export update_particle_field!, update_particle_field_AVGRF!, update_particle_field_brutal!
+    export update_particle_field!, update_particle_field_brutal!
+    export update_particle_field_stretch!, update_particle_field_AVGRF!
     export lab2avgframe!, avg2labframe!, field2labframe
     
     include("particles.jl")

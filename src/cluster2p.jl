@@ -1,10 +1,10 @@
-function admissible(x::SVector{3,T}, bbox::BBox{T}; stretch::SVector{3,T}=SVector(1.0,1.0,1.0), ita::T) where {T}
+function admissible(x::SVector{3,T}, bbox::BBox{T}; stretch::SVector{3,T}=SVector(1.0,1.0,1.0), eta::T) where {T}
     bmin = bbox.bmin
     bmax = bbox.bmax
     xc = (bmin + bmax)/2.0
     r = norm(stretch .* (bmax - xc))
     R = norm(stretch .* (x - xc))
-    return r/R < ita
+    return r/R < eta
 end
 
 function cluster2p_brutal(x::SVector{3,T}, particles::Particles, parindices::Vector{Int64}, index_start, index_end) where {T}
@@ -22,14 +22,14 @@ function cluster2p_brutal(x::SVector{3,T}, particles::Particles, parindices::Vec
     return efield, bfield
 end
 
-function cluster2p(x::SVector{3,T}, cluster::Cluster{T}, particles::Particles, parindices::Vector{Int64}, p_avg; n, ita, stretch=SVector(1.0,1.0,1.0)) where {T}
+function cluster2p(x::SVector{3,T}, cluster::Cluster{T}, particles::Particles, parindices::Vector{Int64}, p_avg; n, eta, stretch=SVector(1.0,1.0,1.0)) where {T}
     efield = SVector(0.0,0.0,0.0)
     bfield = SVector(0.0,0.0,0.0)
     if cluster.children === nothing
         index_start = cluster.pindex_start
         index_end = index_start + cluster.npar - 1
         efield, bfield = cluster2p_brutal(x, particles, parindices, index_start, index_end)
-    elseif admissible(x, cluster.bbox; ita=ita, stretch=stretch)
+    elseif admissible(x, cluster.bbox; eta=eta, stretch=stretch)
         xcoords = cluster.xcoords
         ycoords = cluster.ycoords
         zcoords = cluster.zcoords
@@ -49,8 +49,8 @@ function cluster2p(x::SVector{3,T}, cluster::Cluster{T}, particles::Particles, p
             end
         end
     else
-        efield1, bfield1 = cluster2p(x, cluster.children[1], particles, parindices, p_avg; n=n, ita=ita, stretch=stretch)
-        efield2, bfield2 = cluster2p(x, cluster.children[2], particles, parindices, p_avg; n=n, ita=ita, stretch=stretch)
+        efield1, bfield1 = cluster2p(x, cluster.children[1], particles, parindices, p_avg; n=n, eta=eta, stretch=stretch)
+        efield2, bfield2 = cluster2p(x, cluster.children[2], particles, parindices, p_avg; n=n, eta=eta, stretch=stretch)
         efield = efield1 + efield2
         bfield = bfield1 + bfield2
     end

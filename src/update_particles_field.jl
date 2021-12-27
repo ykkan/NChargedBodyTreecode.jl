@@ -1,4 +1,4 @@
-function update_particle_field!(particles::Particles; n, ita, threshold, lambda) where {T}
+function update_particle_field!(particles::Particles; n, eta, threshold, lambda) where {T}
     q = particles.charge
     p_avg = sum(particles.momentums) / particles.npar
 
@@ -6,13 +6,13 @@ function update_particle_field!(particles::Particles; n, ita, threshold, lambda)
     amp = 2.8179403699772166e-15 * q / lambda
     @inbounds for i in 1:particles.npar
         x = particles.positions[i]
-        (efield, bfield) = cluster2p(x, ct.root, particles, ct.parindices, p_avg; n=n, ita=ita)
+        (efield, bfield) = cluster2p(x, ct.root, particles, ct.parindices, p_avg; n=n, eta=eta)
         particles.self_efields[i] = amp * efield
         particles.self_bfields[i] = amp * bfield
     end
 end
 
-function update_particle_field_stretch!(particles::Particles; n, ita, threshold, lambda) where {T}
+function update_particle_field_stretch!(particles::Particles; n, eta, threshold, lambda) where {T}
     q = particles.charge
     p_avg = sum(particles.momentums) / particles.npar
     g_avg = sqrt(1.0 + dot(p_avg, p_avg))
@@ -21,13 +21,13 @@ function update_particle_field_stretch!(particles::Particles; n, ita, threshold,
     amp = 2.8179403699772166e-15 * q / lambda
     @inbounds for i in 1:particles.npar
         x = particles.positions[i]
-        (efield, bfield) = cluster2p(x, ct.root, particles, ct.parindices, p_avg; n=n, ita=ita, stretch=stretch)
+        (efield, bfield) = cluster2p(x, ct.root, particles, ct.parindices, p_avg; n=n, eta=eta, stretch=stretch)
         particles.self_efields[i] = amp * efield
         particles.self_bfields[i] = amp * bfield
     end
 end
 
-function update_particle_field_AVGRF!(particles::Particles; n, ita, threshold, lambda) where {T}
+function update_particle_field_AVGRF!(particles::Particles; n, eta, threshold, lambda) where {T}
     q = particles.charge
     p_avg = sum(particles.momentums) / particles.npar
     g_avg = sqrt(1.0 + dot(p_avg, p_avg))
@@ -40,7 +40,7 @@ function update_particle_field_AVGRF!(particles::Particles; n, ita, threshold, l
     amp = 2.8179403699772166e-15 * q / lambda
     @inbounds for i in 1:particles.npar
         x = particles.positions[i]
-        (efield, bfield) = cluster2p(x, ct.root, particles, ct.parindices, SVector(0.0,0.0,0.0); n=n, ita=ita)
+        (efield, bfield) = cluster2p(x, ct.root, particles, ct.parindices, SVector(0.0,0.0,0.0); n=n, eta=eta)
         particles.self_efields[i] = amp * efield
         particles.self_bfields[i] = amp * bfield
     end

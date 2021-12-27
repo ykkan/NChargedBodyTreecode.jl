@@ -36,9 +36,9 @@ function update_particle_field_AVGRF!(particles::Particles; n, ita, threshold, l
     @inbounds for i in 1:particles.npar
         x = particles.positions[i]
         (efield, bfield) = cluster2p(x, ct.root, particles, ct.parindices, SVector(0.0,0.0,0.0); n=n, ita=ita)
-        (efield, bfield) = field2labframe(efield, bfield, g_avg, p_avg) 
+        (efield, bfield) = field2labframe(efield, bfield, g_avg, p_avg)
         particles.self_efields[i] = (2.8179403699772166e-15 * q / lambda) * efield
-        particles.self_bfields[i] = (2.8179403699772166e-15 * q / lambda) * bfield
+        particles.self_bfields[i] = (2.8179403699772166e-15 * q/ lambda) * bfield
     end
 
     avg2labframe!(particles, p_avg)
@@ -51,7 +51,7 @@ function update_particle_field_brutal!(particles::Particles; lambda)
         particles.self_efields[i] = SVector(0.0, 0.0, 0.0)
         particles.self_bfields[i] = SVector(0.0, 0.0, 0.0)
         xi = particles.positions[i]
-        for j in 1:particles.npar
+        for j in 1:npar
             xj = particles.positions[j]
             pj = particles.momentums[j]
             K = kernel_relativity(xi, xj, pj)

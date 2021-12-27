@@ -1,4 +1,4 @@
-function update_particle_field!(particles::Particles; n, eta, threshold, lambda) where {T}
+function update_particle_field_unstretch!(particles::Particles; n, eta, threshold, lambda) where {T}
     q = particles.charge
     p_avg = sum(particles.momentums) / particles.npar
 
@@ -33,7 +33,7 @@ function update_particle_field_AVGRF!(particles::Particles; n, eta, threshold, l
     g_avg = sqrt(1.0 + dot(p_avg, p_avg))
 
     # transform particles to rest-frame
-    transformParticleDistribution!(particles, p_avg)
+    transformParticlesDistribution!(particles, p_avg)
 
     # evaluate particles field in the rest-frame
     ct = ClusterTree(particles; n=n, threshold=threshold)

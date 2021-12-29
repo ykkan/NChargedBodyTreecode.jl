@@ -55,9 +55,11 @@ function updateParticlesField!(particles::Particles{T}, alg::TreecodeAvgRestFram
 
     q = particles.charge
     p_avg = sum(particles.momentums) / particles.npar
+    g_avg = sqrt(1.0 + dot(p_avg, p_avg))
 
     # transform particles to rest-frame
-    transformParticlesDistribution!(particles, p_avg)
+    boostParticlesPosition!(particles, p_avg, g_avg)
+    transformParticlesMomentum!(particles, p_avg)
 
     # evaluate particles field in the rest-frame
     ct = ClusterTree(particles; n=n, threshold=N0)
@@ -69,6 +71,9 @@ function updateParticlesField!(particles::Particles{T}, alg::TreecodeAvgRestFram
         particles.self_bfields[i] = amp * bfield
     end
 
-    # transform particle field back to the lab-frame
+    # transform particle distribution and field back to the lab-frame
+    # deboost particles position
+    boostParticlesPosition!(particles, -p_avg, 1.0/g_avg)
+    transformParticlesMomentum!(particles, -p_avg)
     transformParticlesField!(particles, -p_avg)
 end

@@ -1,3 +1,8 @@
+struct BBox{T}
+    bmin::SVector{3,T}
+    bmax::SVector{3,T}
+end
+
 struct Cluster{T}
     level::Int
     npar::Int
@@ -11,17 +16,19 @@ struct Cluster{T}
     children::Union{Nothing,Tuple{Cluster{T},Cluster{T}}}
 end
 
-struct BBox{T}
-    bmin::SVector{3,T}
-    bmax::SVector{3,T}
-end
-
-function num_cluster(c::Cluster{T}) where {T}
-    children = c.children
-    if (children === nothing)
-        return 1
+function make_cluster(particles::Particles{T}, parindices::Vector{Int}, lo, hi, level; n, threshold, stretch=SVector(1.0,1.0,1.0)) where {T}
+    npar = (hi - lo + 1)
+    pos = particles.positions
+    bbox = find_bbox(pos, parindices, lo, hi)
+    if npar <= threshold
+        return Cluster(level, npar, bbox, lo, nothing, nothing, nothing, nothing, nothing, nothing)
     else
-        return 1 + num_cluster(children[1]) + num_cluster(children[2])
+        split_dim = argmax( stretch .* (bbox.bmax - bbox.bmin) )
+        k = split_median!(parindices, pos, split_dim, lo, hi)
+        children = (make_cluster(particles, parindices, lo, k, level + 1; n=n, threshold=threshold, stretch=stretch), make_cluster(particles, parindices, k + 1, hi, level + 1; n=n, threshold=threshold, stretch=stretch))
+        xcoords, ycoords, zcoords = cluster_coord(bbox; n=n)
+        gamma_hat, mom_hat = cluster_weight(particles, parindices, lo, hi, bbox; n=n)
+        return Cluster(level, npar, bbox, lo, xcoords, ycoords, zcoords, gamma_hat, mom_hat, children)
     end
 end
 
@@ -124,22 +131,6 @@ function cluster_weight(particles::Particles, parindices::Vector{Int}, lo, hi, b
     return gamma_hat, mom_hat
 end
 
-function make_cluster(particles::Particles{T}, parindices::Vector{Int}, lo, hi, level; n, threshold, stretch=SVector(1.0,1.0,1.0)) where {T}
-    npar = (hi - lo + 1)
-    pos = particles.positions
-    bbox = find_bbox(pos, parindices, lo, hi)
-    if npar <= threshold
-        return Cluster(level, npar, bbox, lo, nothing, nothing, nothing, nothing, nothing, nothing)
-    else
-        split_dim = argmax( stretch .* (bbox.bmax - bbox.bmin) )
-        k = split_median!(parindices, pos, split_dim, lo, hi)
-        children = (make_cluster(particles, parindices, lo, k, level + 1; n=n, threshold=threshold, stretch=stretch), make_cluster(particles, parindices, k + 1, hi, level + 1; n=n, threshold=threshold, stretch=stretch))
-        xcoords, ycoords, zcoords = cluster_coord(bbox; n=n)
-        gamma_hat, mom_hat = cluster_weight(particles, parindices, lo, hi, bbox; n=n)
-        return Cluster(level, npar, bbox, lo, xcoords, ycoords, zcoords, gamma_hat, mom_hat, children)
-    end
-end
-
 
 function print_bbox(cluster::Cluster{T}) where {T}
     bbox = cluter.bbox
@@ -190,5 +181,14 @@ function split_median!(parindices::Vector{Int}, pos::AbstractVector{SVector{3,T}
         else
             lo = pindex + 1
         end
+    end
+end
+
+function num_cluster(c::Cluster{T}) where {T}
+    children = c.children
+    if (children === nothing)
+        return 1
+    else
+        return 1 + num_cluster(children[1]) + num_cluster(children[2])
     end
 end

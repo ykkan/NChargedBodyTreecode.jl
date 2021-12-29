@@ -1,8 +1,3 @@
-struct BBox{T}
-    bmin::SVector{3,T}
-    bmax::SVector{3,T}
-end
-
 struct Cluster{T}
     level::Int
     npar::Int
@@ -14,6 +9,11 @@ struct Cluster{T}
     gamma_hat::Union{Nothing,Array{T,3}}
     mom_hat::Union{Nothing,Array{SVector{3,T},3}}
     children::Union{Nothing,Tuple{Cluster{T},Cluster{T}}}
+end
+
+struct BBox{T}
+    bmin::SVector{3,T}
+    bmax::SVector{3,T}
 end
 
 function num_cluster(c::Cluster{T}) where {T}

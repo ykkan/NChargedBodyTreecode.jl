@@ -7,10 +7,12 @@ module NChargedBodyTreecode
     export Particles
     export ClusterTree, num_cluster
 
-    export BruteForce, TreecodeUnstretch, TreecodeStretch, TreecodeAvgRestFrame
     export updateParticlesField!
+    export BruteForce, TreecodeUnstretch, TreecodeStretch, TreecodeAvgRestFrame
 
-    export transformParticlesDistribution!, transformParticlesField!
+    export boostParticlesPosition!
+    export transformParticlesMomentums!
+    export transtransformParticlesField!
 
     include("algorithm.jl")
     include("particles.jl")

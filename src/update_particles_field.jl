@@ -1,4 +1,10 @@
-function updateParticlesField!(particles::Particles, alg::BruteForce; lambda)
+"""
+    updateParticlesField!(particles::Particles, alg::BruteForce; lambda)
+
+Evaluate and update the space charge field experienced by each particle in `beam` using
+`alg` method.
+"""
+function updateParticlesField!(particles::Particles{T}, alg::BruteForce; lambda) where {T}
     q = particles.charge
     npar = particles.npar
     @inbounds for i in 1:npar

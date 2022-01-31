@@ -14,6 +14,8 @@ module NChargedBodyTreecode
     export transformParticlesMomentums!
     export transtransformParticlesField!
 
+    export relerror
+
     include("algorithm.jl")
     include("particles.jl")
     include("cluster.jl")
@@ -22,4 +24,5 @@ module NChargedBodyTreecode
     include("update_particles_field.jl")
     include("force_kernel.jl")
     include("relativity.jl")
+    include("diagnostic.jl")
 end # module

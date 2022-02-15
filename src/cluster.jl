@@ -1,8 +1,3 @@
-struct BBox{T}
-    bmin::SVector{3,T}
-    bmax::SVector{3,T}
-end
-
 struct Cluster{T}
     level::Int
     npar::Int
@@ -30,6 +25,11 @@ function make_cluster(particles::Particles{T}, parindices::Vector{Int}, lo, hi, 
         gamma_hat, mom_hat = cluster_weight(particles, parindices, lo, hi, bbox; n=n)
         return Cluster(level, npar, bbox, lo, xcoords, ycoords, zcoords, gamma_hat, mom_hat, children)
     end
+end
+
+struct BBox{T}
+    bmin::SVector{3,T}
+    bmax::SVector{3,T}
 end
 
 function find_bbox(pos::AbstractVector{SVector{3,T}}, parindices::Vector{Int}, lo, hi) where {T}
@@ -114,7 +114,7 @@ function cluster_weight(particles::Particles, parindices::Vector{Int}, lo, hi, b
         else
             az .= 0.0
             az[indz] = 1.0
-        sum_z = 1.0
+            sum_z = 1.0
         end
         p = mom[pindex]
         gamma = sqrt(1.0 + dot(p, p))

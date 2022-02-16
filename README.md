@@ -1,7 +1,7 @@
 # NChargedBodyTreecode
 by Yi-Kai Kan (<tw.ykkan@gmail.com>)
 
-This package provides algorithms for calculating the relativistic space-charge field by treecode and was used for the numerical experiments in the reasearch article: 
+This package provides treecode algorithms for calculating the relativistic space-charge field and was used for the numerical experiments in the reasearch article: 
 
 Yi-Kai Kan, Franz X. Kärtner, Sabine Le Borne and Jens-Peter M. Zemker, "*Relativistic Space-Charge Field Calculation by Interpolation-Based Treecode*", under review 
 

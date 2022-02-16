@@ -3,7 +3,7 @@ by Yi-Kai Kan (<tw.ykkan@gmail.com>)
 
 This package provides algorithms for calculating the relativistic space-charge field by treecode and was used for the numerical experiments in the reasearch article: 
 
-Yi-Kai Kan, Franz X. Kartner, Sabine Le Borne and Jens-Peter M. Zemker, "*Relativistic Space-Charge Field Calculation by Interpolation-Based Treecode*", under review 
+Yi-Kai Kan, Franz X. Kärtner, Sabine Le Borne and Jens-Peter M. Zemker, "*Relativistic Space-Charge Field Calculation by Interpolation-Based Treecode*", under review 
 
 The treeocodes are implemented based on the tensor-product interpolation with Lagragian polynomials. More details can be found in the original article.
 
@@ -65,7 +65,7 @@ error1 = relerror(beam1, beam0)
 error2 = relerror(beam2, beam0)
 error3 = relerror(beam3, beam0)
 ```
-The space-charge field (both E- and B-field) of `beam` is stored in `beam.self_efields` and `beam.self_bfields` (both have type `Vector{SVector{3,T}}`, see [StaticArrays](https://github.com/JuliaArrays/StaticArrays.jl) for more details).
+The space-charge field (both E- and B-field) of `beam` is stored in `beam.self_efields` and `beam.self_bfields` (both have a type `Vector{SVector{3,T}}`, see [StaticArrays](https://github.com/JuliaArrays/StaticArrays.jl) for more details).
 
 After the update of space-charge field of `beam`, the space-charge field on i-th particle can be accessed by, for example
 ```julia

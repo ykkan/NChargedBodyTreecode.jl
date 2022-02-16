@@ -1,10 +1,8 @@
 name = "NChargedBodyTreecode"
 uuid = "7c2574be-fa89-45fc-a525-9053690e4c33"
 authors = ["Yi-Kai Kan <tw.ykkan@gmail.com>"]
-version = "0.1.0"
+version = "1.0.0"
 
 [deps]
-BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
-TimerOutputs = "a759f4b9-e2f1-59dc-863e-4aeb61b1ea8f"

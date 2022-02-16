@@ -20,7 +20,7 @@ pkg> add("https://github.com/ykkan/NChargedBodyTreecode.git")
 
 # Usage
 ## Creating a Charged Particle Beam
-A charged particle beam can be created by providing an array of particle position and array of particle momentum.
+A charged particle beam can be created by providing an array of particle position and an array of particle momentum.
 ``` julia
 using NChargedBodyTreecode
 
@@ -65,7 +65,7 @@ error1 = relerror(beam1, beam0)
 error2 = relerror(beam2, beam0)
 error3 = relerror(beam3, beam0)
 ```
-The space-charge field (both E- and B-field) of `beam` is stored in `beam.self_efields` and `beam.self_bfields` (both have a type `Vector{SVector{3,T}}`, see [StaticArrays](https://github.com/JuliaArrays/StaticArrays.jl) for more details).
+The space-charge field (both E- and B-field) of `beam` is stored in `beam.self_efields` and `beam.self_bfields` (both have type `Vector{SVector{3,T}}`, see [StaticArrays](https://github.com/JuliaArrays/StaticArrays.jl) for more details).
 
 After the update of space-charge field of `beam`, the space-charge field on i-th particle can be accessed by, for example
 ```julia

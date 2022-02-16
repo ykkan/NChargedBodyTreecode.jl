@@ -1,8 +1,6 @@
 module NChargedBodyTreecode
     using StaticArrays
     using LinearAlgebra
-    using BenchmarkTools
-    using TimerOutputs
 
     export Particles
     export ClusterTree, num_cluster

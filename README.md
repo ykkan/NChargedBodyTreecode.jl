@@ -30,7 +30,6 @@ const N = 1000
 # create position and momentum distribution of N particles
 positions = rand(3, N)
 momenta = zeros(3, N)
-momenta[3, :] .= 30.0
 
 # create a particle beam in which each particle's charge and mass are -1 and 1 
 beam = Particles(; pos=positions, mom=momenta, charge=-1.0, mass=1.0) 
@@ -44,14 +43,8 @@ The space-charge field of a particle beam can be evaluated using `updateParticle
 * `TreecodeUnstretch`: treecode with conventional admissibility condition 
 ``` julia
 using NChargedBodyTreecode
-
-# create 4 copies of a particle beam
-beam0 = deepcopy(beam)
-beam1 = deepcopy(beam)
-beam2 = deepcopy(beam)
-beam3 = deepcopy(beam)
-
 # update particle field by brute-force method (lambda is a characteristic length for the normalization of length quantity)
+
 updateParticlesField!(beam0, BruteForce(); lambda=1.0)
 
 # update particle field by different treecode methods with the following parameters: 
@@ -79,3 +72,5 @@ After the update of space-charge field of `beam`, the space-charge field on i-th
 efield = beam.self_efields[i]
 bfield = beam.self_bfields[i]
 ```
+
+ More details can found in the demo file in the directory `examples/`.

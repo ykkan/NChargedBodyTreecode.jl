@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6109419.svg)](https://doi.org/10.5281/zenodo.6109419)
+
 # NChargedBodyTreecode.jl
 by Yi-Kai Kan (<tw.ykkan@gmail.com>)
 

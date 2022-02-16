@@ -73,4 +73,4 @@ efield = beam.self_efields[i]
 bfield = beam.self_bfields[i]
 ```
 
- More details can found in the demo file in the directory `examples/`.
+ More details can found in the demo file from `examples/`.

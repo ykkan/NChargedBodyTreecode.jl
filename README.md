@@ -4,11 +4,7 @@
 
 by Yi-Kai Kan (<tw.ykkan@gmail.com>)
 
-This package provides treecode algorithms for calculating the relativistic space-charge field and was used for the numerical experiments in the reasearch article: 
-
-Yi-Kai Kan, Franz X. Kärtner, Sabine Le Borne and Jens-Peter M. Zemker, "*Relativistic Space-Charge Field Calculation by Interpolation-Based Treecode*", under review 
-
-The treeocodes are implemented based on the tensor-product interpolation with Lagragian polynomials. More details can be found in the original article.
+This package provides treecode algorithms for calculating the relativistic space-charge field. The treeocodes are implemented based on the tensor-product interpolation with Lagragian polynomials.
 
 # Installation
 The package can be installed using Julia's REPL

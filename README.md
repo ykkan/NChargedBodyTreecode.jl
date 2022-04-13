@@ -1,6 +1,6 @@
 # NChargedBodyTreecode.jl
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6109419.svg)](https://doi.org/10.5281/zenodo.6109419)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6118746.svg)](https://doi.org/10.5281/zenodo.6118746)
 
 by Yi-Kai Kan (<yikai.kan@desy.de>)
 

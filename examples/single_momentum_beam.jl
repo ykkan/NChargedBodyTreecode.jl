@@ -34,7 +34,7 @@ const N0 = 128
 const eta = 0.5
 updateParticlesField!(beam1, TreecodeStretch(eta=eta, N0=N0, n=n); lambda=1.0)
 updateParticlesField!(beam2, TreecodeAvgRestFrame(eta=eta, N0=N0, n=n); lambda=1.0)
-updateParticlesField!(beam3, TreecodeUnstretch(eta=eta, N0=N0, n=n); lambda=1.0)
+updateParticlesField!(beam3, TreecodeUniform(eta=eta, N0=N0, n=n); lambda=1.0)
 
 # relative errors of different treecodes (comparing to brute-force)
 error1 = relerror(beam1, beam0)
@@ -45,4 +45,4 @@ println("relative errors")
 println("----------------")
 println("Treecode-Stretch: $(error1)")
 println("Treecode-AVGRF: $(error2)")
-println("Treecode-Unstretch: $(error3)")
+println("Treecode-Uniform: $(error3)")

@@ -40,7 +40,7 @@ function updateParticlesField!(particles::Particles{T}, alg::TreecodeStretch{T};
     end
 end
 
-function updateParticlesField!(particles::Particles{T}, alg::TreecodeUnstretch{T}; lambda) where {T}
+function updateParticlesField!(particles::Particles{T}, alg::TreecodeUniform{T}; lambda) where {T}
     (;n, N0, eta) = alg
 
     q = particles.charge

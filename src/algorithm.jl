@@ -14,7 +14,7 @@ end
     eta::T
 end
 
-@kwdef struct TreecodeUnstretch{T}
+@kwdef struct TreecodeUniform{T}
     n::Int
     N0::Int
     eta::T

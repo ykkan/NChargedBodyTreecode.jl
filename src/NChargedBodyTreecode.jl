@@ -6,7 +6,7 @@ module NChargedBodyTreecode
     export ClusterTree, num_cluster
 
     export updateParticlesField!
-    export BruteForce, TreecodeUnstretch, TreecodeStretch, TreecodeAvgRestFrame
+    export BruteForce, TreecodeUniform, TreecodeStretch, TreecodeAvgRestFrame
 
     export boostParticlesPosition!
     export transformParticlesMomentums!

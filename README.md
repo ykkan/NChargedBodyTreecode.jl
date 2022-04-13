@@ -2,7 +2,7 @@
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6109419.svg)](https://doi.org/10.5281/zenodo.6109419)
 
-by Yi-Kai Kan (<tw.ykkan@gmail.com>)
+by Yi-Kai Kan (<yikai.kan@desy.de>)
 
 This package provides treecode algorithms for calculating the relativistic space-charge field. The treeocodes are implemented based on the tensor-product interpolation with Lagragian polynomials.
 
@@ -39,7 +39,7 @@ The space-charge field of a particle beam can be evaluated using `updateParticle
 * `BruteForce`: brute-forece method
 * `TreecodeStretch`: treecode with stretched admissibility condition
 * `TreecodeAvgRestFrame`: treecode using average rest-frame technique
-* `TreecodeUnstretch`: treecode with conventional admissibility condition 
+* `TreecodeUniform`: treecode with conventional admissibility condition 
 ``` julia
 using NChargedBodyTreecode
 # update particle field by brute-force method (lambda is a characteristic length for the normalization of length quantity)
@@ -57,7 +57,7 @@ const N0 = 20
 const eta = 0.5
 updateParticlesField!(beam1, TreecodeStretch(eta=eta, N0=N0, n=n); lambda=1.0)
 updateParticlesField!(beam2, TreecodeAvgRestFrame(eta=eta, N0=N0, n=n); lambda=1.0)
-updateParticlesField!(beam3, TreecodeUnstretch(eta=eta, N0=N0, n=n); lambda=1.0)
+updateParticlesField!(beam3, TreecodeUniform(eta=eta, N0=N0, n=n); lambda=1.0)
 
 # relative errors of different treecodes (comparing to brute-force)
 error1 = relerror(beam1, beam0) 

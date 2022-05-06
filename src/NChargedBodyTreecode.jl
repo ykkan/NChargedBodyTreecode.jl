@@ -24,6 +24,7 @@ module NChargedBodyTreecode
     include("cluster_tree.jl")
     include("cluster2p.jl")
     include("macroparticles.jl")
+    include("upwardpass.jl")
     include("update_particles_field.jl")
     include("force_kernel.jl")
     include("relativity.jl")

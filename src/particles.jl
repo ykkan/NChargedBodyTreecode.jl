@@ -4,7 +4,7 @@ struct Particles{T,V <: AbstractVector{SVector{3,T}}}
     charge::T
     mass::T
     positions::V
-    momentums::V
+    momenta::V
     self_efields::V
     self_bfields::V
 end
@@ -41,7 +41,7 @@ function update_self_field!(beam::Particles; lambda)
         xi = beam.positions[i]
         for j in 1:beam.npar
             xj = beam.positions[j]
-            pj = beam.momentums[j]
+            pj = beam.momenta[j]
             xij = xi - xj
             kernel = xij / sqrt(dot(xij, xij) + dot(pj, xij)^2 + eps())^3
             beam.self_efields[i] += 2.8179403699772166e-15 * q / lambda * sqrt(1.0 + dot(pj, pj)) * kernel
@@ -53,7 +53,7 @@ end
 
 function output(beam::Particles, fname)
     pos = beam.positions
-    mom = beam.momentums
+    mom = beam.momenta
     open(fname, "w") do io
         writedlm(io, pos)
     end

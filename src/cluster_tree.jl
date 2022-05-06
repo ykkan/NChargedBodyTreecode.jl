@@ -4,10 +4,10 @@ struct ClusterTree{T}
     root::Cluster{T}
 end
 
-function ClusterTree(particles::Particles; n, threshold, stretch=SVector(1.0,1.0,1.0)) where {T}
+function ClusterTree(particles::Particles; n, N0, stretch=SVector(1.0,1.0,1.0)) where {T}
     npar = particles.npar
     parindices = [1:npar;]
-    root = make_cluster(particles, parindices, 1, npar, 1; n=n, threshold=threshold, stretch=stretch)
+    root = subdivide(particles, parindices, 1, npar, 1; n=n, N0=N0, stretch=stretch)
     return ClusterTree(npar, parindices, root)
 end
 

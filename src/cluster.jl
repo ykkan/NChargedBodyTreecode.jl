@@ -1,6 +1,10 @@
-struct BBox{T}
-    bmin::SVector{3,T}
-    bmax::SVector{3,T}
+struct Cluster{T}
+    level::Int
+    pindex_lo::Int
+    pindex_hi::Int
+    bbox::BBox{T}
+    macroparticles::MacroParticles{T}
+    children::Union{Nothing,Tuple{Cluster{T},Cluster{T}}}
 end
 
 function BBox(particles::Particles{T}, parindices::Vector{Int}, lo::Int, hi::Int) where {T}
@@ -24,15 +28,6 @@ function BBox(particles::Particles{T}, parindices::Vector{Int}, lo::Int, hi::Int
     return BBox(bmin, bmax)
 end
 
-struct Cluster{T}
-    level::Int
-    pindex_lo::Int
-    pindex_hi::Int
-    bbox::BBox{T}
-    macroparticles::MacroParticles{T}
-    children::Union{Nothing,Tuple{Cluster{T},Cluster{T}}}
-end
-
 function subdivide(particles::Particles{T}, parindices::Vector{Int}, lo, hi, level; n, N0, stretch=SVector(1.0,1.0,1.0)) where {T}
     npar = (hi - lo + 1)
     pos = particles.positions
@@ -46,7 +41,7 @@ function subdivide(particles::Particles{T}, parindices::Vector{Int}, lo, hi, lev
     macroparticles.gammas .= cgammas
     macroparticles.momenta .= cmomenta
     if npar <= N0
-        return Cluster(level, npar, bbox, lo, macroparticles, nothing)
+        return Cluster(level, lo, hi, bbox, macroparticles, nothing)
     else
         splitdir = argmax( stretch .* (bbox.bmax - bbox.bmin) )
         k = split_median!(parindices, pos, splitdir, lo, hi)
@@ -69,7 +64,7 @@ end
 
 function cluster_weight(particles::Particles, parindices::Vector{Int}, lo, hi, bbox::BBox{T}; n) where {T}
     pos = particles.positions
-    mom = particles.momentums
+    mom = particles.momenta
     bmin = bbox.bmin
     bmax = bbox.bmax
     chebpts = [cos(pi * i / n) for i in 0:n]

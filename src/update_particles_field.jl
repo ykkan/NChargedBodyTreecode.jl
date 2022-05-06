@@ -14,7 +14,7 @@ function updateParticlesField!(particles::Particles{T}, alg::BruteForce; lambda)
         amp = 2.8179403699772166e-15 * q / lambda
         for j in 1:npar
             xj = particles.positions[j]
-            pj = particles.momentums[j]
+            pj = particles.momenta[j]
             K = kernel_relativity(xi, xj, pj)
             particles.self_efields[i] += amp * sqrt(1.0 + dot(pj, pj)) * K
             particles.self_bfields[i] += amp * cross(pj, K)
@@ -26,11 +26,11 @@ function updateParticlesField!(particles::Particles{T}, alg::TreecodeStretch{T};
     (;n, N0, eta) = alg
 
     q = particles.charge
-    p_avg = sum(particles.momentums) / particles.npar
+    p_avg = sum(particles.momenta) / particles.npar
     g_avg = sqrt(1.0 + dot(p_avg, p_avg))
     stretch = SVector(1.0,1.0,g_avg)
 
-    ct = ClusterTree(particles; n=n, threshold=N0, stretch=stretch)
+    ct = ClusterTree(particles; n=n, N0=N0, stretch=stretch)
     amp = 2.8179403699772166e-15 * q / lambda
     @inbounds for i in 1:particles.npar
         x = particles.positions[i]
@@ -44,9 +44,9 @@ function updateParticlesField!(particles::Particles{T}, alg::TreecodeUniform{T};
     (;n, N0, eta) = alg
 
     q = particles.charge
-    p_avg = sum(particles.momentums) / particles.npar
+    p_avg = sum(particles.momenta) / particles.npar
 
-    ct = ClusterTree(particles; n=n, threshold=N0)
+    ct = ClusterTree(particles; n=n, N0=N0)
     amp = 2.8179403699772166e-15 * q / lambda
     @inbounds for i in 1:particles.npar
         x = particles.positions[i]
@@ -60,7 +60,7 @@ function updateParticlesField!(particles::Particles{T}, alg::TreecodeAvgRestFram
     (;n, N0, eta) = alg
 
     q = particles.charge
-    p_avg = sum(particles.momentums) / particles.npar
+    p_avg = sum(particles.momenta) / particles.npar
     g_avg = sqrt(1.0 + dot(p_avg, p_avg))
 
     # transform particles to rest-frame
@@ -68,7 +68,7 @@ function updateParticlesField!(particles::Particles{T}, alg::TreecodeAvgRestFram
     transformParticlesMomentum!(particles, p_avg)
 
     # evaluate particles field in the rest-frame
-    ct = ClusterTree(particles; n=n, threshold=N0)
+    ct = ClusterTree(particles; n=n, N0=N0)
     amp = 2.8179403699772166e-15 * q / lambda
     @inbounds for i in 1:particles.npar
         x = particles.positions[i]

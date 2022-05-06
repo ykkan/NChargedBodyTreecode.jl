@@ -26,7 +26,7 @@ to the inertial frame moving with the momentum `fp`.
 """
 function transformParticlesMomentum!(beam::Particles, fp::SVector{3,T}) where {T}
     fg = sqrt(1.0 + dot(fp, fp))
-    mom = beam.momentums
+    mom = beam.momenta
     @inbounds for k in 1:beam.npar
        p = mom[k]
        mom[k] = transformMomentum(p, fg, fp)

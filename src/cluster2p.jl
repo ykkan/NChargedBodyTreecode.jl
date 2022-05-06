@@ -42,11 +42,11 @@ end
 function cluster2p_brutal(x::SVector{3,T}, cluster::Cluster{T}, particles::Particles, parindices::Vector{Int64}) where {T}
     efield = SVector(0.0,0.0,0.0)
     bfield = SVector(0.0,0.0,0.0)
-    pindex_lo = cluster.pindex_lo
-    pindex_hi = cluster.pindex_hi
+    parindex_lo = cluster.parindex_lo
+    parindex_hi = cluster.parindex_hi
     pos = particles.positions
     mom = particles.momenta
-    for k in pindex_lo:pindex_hi
+    for k in parindex_lo:parindex_hi
         xj = pos[parindices[k]]
         pj = mom[parindices[k]]
         K = kernel_relativity(x, xj, pj)

@@ -1,7 +1,7 @@
 struct Cluster{T}
     level::Int
-    pindex_lo::Int
-    pindex_hi::Int
+    parindex_lo::Int
+    parindex_hi::Int
     bbox::BBox{T}
     macroparticles::MacroParticles{T}
     children::Union{Nothing,Tuple{Cluster{T},Cluster{T}}}
@@ -28,18 +28,33 @@ function BBox(particles::Particles{T}, parindices::Vector{Int}, lo::Int, hi::Int
     return BBox(bmin, bmax)
 end
 
+# function subdivide(particles::Particles{T}, parindices::Vector{Int}, lo, hi, level; n, N0, stretch=SVector(1.0,1.0,1.0)) where {T}
+#     npar = (hi - lo + 1)
+#     pos = particles.positions
+#     bbox = BBox(particles, parindices, lo, hi)
+#     macroparticles = MacroParticles(bbox, n)
+#     xcoords, ycoords, zcoords = cluster_coord(bbox; n=n)
+#     cgammas, cmomenta = cluster_weight(particles, parindices, lo, hi, bbox; n=n)
+#     macroparticles.xcoords .= xcoords
+#     macroparticles.ycoords .= ycoords
+#     macroparticles.zcoords .= zcoords
+#     macroparticles.gammas .= cgammas
+#     macroparticles.momenta .= cmomenta
+#     if npar <= N0
+#         return Cluster(level, lo, hi, bbox, macroparticles, nothing)
+#     else
+#         splitdir = argmax( stretch .* (bbox.bmax - bbox.bmin) )
+#         k = split_median!(parindices, pos, splitdir, lo, hi)
+#         children = (subdivide(particles, parindices, lo, k, level + 1; n=n, N0=N0, stretch=stretch), subdivide(particles, parindices, k + 1, hi, level + 1; n=n, N0=N0, stretch=stretch))
+#         return Cluster(level, lo, hi, bbox, macroparticles, children)
+#     end
+# end
+
 function subdivide(particles::Particles{T}, parindices::Vector{Int}, lo, hi, level; n, N0, stretch=SVector(1.0,1.0,1.0)) where {T}
     npar = (hi - lo + 1)
     pos = particles.positions
     bbox = BBox(particles, parindices, lo, hi)
     macroparticles = MacroParticles(bbox, n)
-    xcoords, ycoords, zcoords = cluster_coord(bbox; n=n)
-    cgammas, cmomenta = cluster_weight(particles, parindices, lo, hi, bbox; n=n)
-    macroparticles.xcoords .= xcoords
-    macroparticles.ycoords .= ycoords
-    macroparticles.zcoords .= zcoords
-    macroparticles.gammas .= cgammas
-    macroparticles.momenta .= cmomenta
     if npar <= N0
         return Cluster(level, lo, hi, bbox, macroparticles, nothing)
     else
@@ -83,8 +98,8 @@ function cluster_weight(particles::Particles, parindices::Vector{Int}, lo, hi, b
     gamma_hat = zeros(n + 1, n + 1, n + 1)
     mom_hat  = fill(SVector(0.0, 0.0, 0.0), (n + 1, n + 1, n + 1))
     for i = lo:hi
-        pindex = parindices[i]
-        x, y, z = (pos[pindex] - bmin) ./ (bmax - bmin) * 2 .- 1.0
+        parindex = parindices[i]
+        x, y, z = (pos[parindex] - bmin) ./ (bmax - bmin) * 2 .- 1.0
         diffx .= (x .- chebpts)
         diffy .= (y .- chebpts)
         diffz .= (z .- chebpts)
@@ -115,7 +130,7 @@ function cluster_weight(particles::Particles, parindices::Vector{Int}, lo, hi, b
             az[indz] = 1.0
             sum_z = 1.0
         end
-        p = mom[pindex]
+        p = mom[parindex]
         gamma = sqrt(1.0 + dot(p, p))
         for k in 1:(n + 1)
             for j in 1:(n + 1)
@@ -151,9 +166,9 @@ macro swap!(a, b)
     end
 end
 
-function partition!(parindices::Vector{Int}, pos::AbstractVector{SVector{3,T}}, dim, lo, hi, pindex) where {T}
-pval = pos[parindices[pindex]][dim]
-    @swap!(parindices[pindex], parindices[hi])
+function partition!(parindices::Vector{Int}, pos::AbstractVector{SVector{3,T}}, dim, lo, hi, parindex) where {T}
+pval = pos[parindices[parindex]][dim]
+    @swap!(parindices[parindex], parindices[hi])
     j = lo
     for i in lo:(hi - 1)
         if pos[parindices[i]][dim] < pval
@@ -171,14 +186,14 @@ function split_median!(parindices::Vector{Int}, pos::AbstractVector{SVector{3,T}
         if lo == hi
             return lo
         end
-        pindex = rand(lo:hi) # floor(Int, (lo + hi) / 2.0)
-        pindex = partition!(parindices, pos, dim, lo, hi, pindex)
-        if pindex == k
+        parindex = rand(lo:hi) # floor(Int, (lo + hi) / 2.0)
+        parindex = partition!(parindices, pos, dim, lo, hi, parindex)
+        if parindex == k
             return k
-        elseif pindex > k
-            hi = pindex - 1
+        elseif parindex > k
+            hi = parindex - 1
         else
-            lo = pindex + 1
+            lo = parindex + 1
         end
     end
 end

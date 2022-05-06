@@ -29,11 +29,7 @@ struct Cluster{T}
     pindex_lo::Int
     pindex_hi::Int
     bbox::BBox{T}
-    xcoords::Union{Nothing,Vector{T}}
-    ycoords::Union{Nothing,Vector{T}}
-    zcoords::Union{Nothing,Vector{T}}
-    gammas::Union{Nothing,Array{T,3}}
-    momenta::Union{Nothing,Array{SVector{3,T},3}}
+    macroparticles::MacroParticles{T}
     children::Union{Nothing,Tuple{Cluster{T},Cluster{T}}}
 end
 
@@ -41,15 +37,21 @@ function subdivide(particles::Particles{T}, parindices::Vector{Int}, lo, hi, lev
     npar = (hi - lo + 1)
     pos = particles.positions
     bbox = BBox(particles, parindices, lo, hi)
+    macroparticles = MacroParticles(bbox, n)
+    xcoords, ycoords, zcoords = cluster_coord(bbox; n=n)
+    cgammas, cmomenta = cluster_weight(particles, parindices, lo, hi, bbox; n=n)
+    macroparticles.xcoords .= xcoords
+    macroparticles.ycoords .= ycoords
+    macroparticles.zcoords .= zcoords
+    macroparticles.gammas .= cgammas
+    macroparticles.momenta .= cmomenta
     if npar <= N0
-        return Cluster(level, npar, bbox, lo, nothing, nothing, nothing, nothing, nothing, nothing)
+        return Cluster(level, npar, bbox, lo, macroparticles, nothing)
     else
         splitdir = argmax( stretch .* (bbox.bmax - bbox.bmin) )
         k = split_median!(parindices, pos, splitdir, lo, hi)
         children = (subdivide(particles, parindices, lo, k, level + 1; n=n, N0=N0, stretch=stretch), subdivide(particles, parindices, k + 1, hi, level + 1; n=n, N0=N0, stretch=stretch))
-        xcoords, ycoords, zcoords = cluster_coord(bbox; n=n)
-        cgammas, cmomenta = cluster_weight(particles, parindices, lo, hi, bbox; n=n)
-        return Cluster(level, lo, hi, bbox, xcoords, ycoords, zcoords, cgammas, cmomenta, children)
+        return Cluster(level, lo, hi, bbox, macroparticles, children)
     end
 end
 

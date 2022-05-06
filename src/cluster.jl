@@ -3,36 +3,8 @@ struct BBox{T}
     bmax::SVector{3,T}
 end
 
-struct Cluster{T}
-    level::Int
-    npar::Int
-    bbox::BBox{T}
-    pindex_start::Int
-    xcoords::Union{Nothing,Vector{T}}
-    ycoords::Union{Nothing,Vector{T}}
-    zcoords::Union{Nothing,Vector{T}}
-    gamma_hat::Union{Nothing,Array{T,3}}
-    mom_hat::Union{Nothing,Array{SVector{3,T},3}}
-    children::Union{Nothing,Tuple{Cluster{T},Cluster{T}}}
-end
-
-function make_cluster(particles::Particles{T}, parindices::Vector{Int}, lo, hi, level; n, threshold, stretch=SVector(1.0,1.0,1.0)) where {T}
-    npar = (hi - lo + 1)
+function BBox(particles::Particles{T}, parindices::Vector{Int}, lo::Int, hi::Int) where {T}
     pos = particles.positions
-    bbox = find_bbox(pos, parindices, lo, hi)
-    if npar <= threshold
-        return Cluster(level, npar, bbox, lo, nothing, nothing, nothing, nothing, nothing, nothing)
-    else
-        split_dim = argmax( stretch .* (bbox.bmax - bbox.bmin) )
-        k = split_median!(parindices, pos, split_dim, lo, hi)
-        children = (make_cluster(particles, parindices, lo, k, level + 1; n=n, threshold=threshold, stretch=stretch), make_cluster(particles, parindices, k + 1, hi, level + 1; n=n, threshold=threshold, stretch=stretch))
-        xcoords, ycoords, zcoords = cluster_coord(bbox; n=n)
-        gamma_hat, mom_hat = cluster_weight(particles, parindices, lo, hi, bbox; n=n)
-        return Cluster(level, npar, bbox, lo, xcoords, ycoords, zcoords, gamma_hat, mom_hat, children)
-    end
-end
-
-function find_bbox(pos::AbstractVector{SVector{3,T}}, parindices::Vector{Int}, lo, hi) where {T}
     tmin = typemin(T)
     tmax = typemax(T)
     xmin, xmax = tmax, tmin
@@ -51,6 +23,36 @@ function find_bbox(pos::AbstractVector{SVector{3,T}}, parindices::Vector{Int}, l
     bmax = SVector(xmax, ymax, zmax)
     return BBox(bmin, bmax)
 end
+
+struct Cluster{T}
+    level::Int
+    pindex_lo::Int
+    pindex_hi::Int
+    bbox::BBox{T}
+    xcoords::Union{Nothing,Vector{T}}
+    ycoords::Union{Nothing,Vector{T}}
+    zcoords::Union{Nothing,Vector{T}}
+    gammas::Union{Nothing,Array{T,3}}
+    momenta::Union{Nothing,Array{SVector{3,T},3}}
+    children::Union{Nothing,Tuple{Cluster{T},Cluster{T}}}
+end
+
+function subdivide(particles::Particles{T}, parindices::Vector{Int}, lo, hi, level; n, N0, stretch=SVector(1.0,1.0,1.0)) where {T}
+    npar = (hi - lo + 1)
+    pos = particles.positions
+    bbox = BBox(particles, parindices, lo, hi)
+    if npar <= N0
+        return Cluster(level, npar, bbox, lo, nothing, nothing, nothing, nothing, nothing, nothing)
+    else
+        splitdir = argmax( stretch .* (bbox.bmax - bbox.bmin) )
+        k = split_median!(parindices, pos, splitdir, lo, hi)
+        children = (subdivide(particles, parindices, lo, k, level + 1; n=n, N0=N0, stretch=stretch), subdivide(particles, parindices, k + 1, hi, level + 1; n=n, N0=N0, stretch=stretch))
+        xcoords, ycoords, zcoords = cluster_coord(bbox; n=n)
+        cgammas, cmomenta = cluster_weight(particles, parindices, lo, hi, bbox; n=n)
+        return Cluster(level, lo, hi, bbox, xcoords, ycoords, zcoords, cgammas, cmomenta, children)
+    end
+end
+
 
 function cluster_coord(bbox::BBox{T}; n) where {T}
     # transform chebpts to [0,1]

@@ -2,15 +2,13 @@ function cluster2p(x::SVector{3,T}, cluster::Cluster{T}, particles::Particles, p
     efield = SVector(0.0,0.0,0.0)
     bfield = SVector(0.0,0.0,0.0)
     if cluster.children === nothing
-        index_start = cluster.pindex_start
-        index_end = index_start + cluster.npar - 1
-        efield, bfield = cluster2p_brutal(x, particles, parindices, index_start, index_end)
+        efield, bfield = cluster2p_brutal(x, cluster, particles, parindices)
     elseif admissible(x, cluster.bbox; eta=eta, stretch=stretch)
         xcoords = cluster.xcoords
         ycoords = cluster.ycoords
         zcoords = cluster.zcoords
-        gamma_hat = cluster.gamma_hat
-        mom_hat = cluster.mom_hat
+        gamma_hat = cluster.gammas
+        mom_hat = cluster.momenta
         for k in 1:(n+1)
             sz = zcoords[k]
             for j in 1:(n+1)
@@ -42,12 +40,14 @@ function admissible(x::SVector{3,T}, bbox::BBox{T}; stretch::SVector{3,T}=SVecto
     return r/R < eta
 end
 
-function cluster2p_brutal(x::SVector{3,T}, particles::Particles, parindices::Vector{Int64}, index_start, index_end) where {T}
+function cluster2p_brutal(x::SVector{3,T}, cluster::Cluster{T}, particles::Particles, parindices::Vector{Int64}) where {T}
     efield = SVector(0.0,0.0,0.0)
     bfield = SVector(0.0,0.0,0.0)
+    pindex_lo = cluster.pindex_lo
+    pindex_hi = cluster.pindex_hi
     pos = particles.positions
-    mom = particles.momentums
-    for k in index_start:index_end
+    mom = particles.momenta
+    for k in pindex_lo:pindex_hi
         xj = pos[parindices[k]]
         pj = mom[parindices[k]]
         K = kernel_relativity(x, xj, pj)

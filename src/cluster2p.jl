@@ -62,19 +62,3 @@ function P2P(x::SVector{3,T}, cluster::Cluster{T}, particles::Particles, parindi
     end
     return efield, bfield
 end
-# function cluster2p_brutal(x::SVector{3,T}, cluster::Cluster{T}, particles::Particles, parindices::Vector{Int64}) where {T}
-#     efield = SVector(0.0,0.0,0.0)
-#     bfield = SVector(0.0,0.0,0.0)
-#     parindex_lo = cluster.parindex_lo
-#     parindex_hi = cluster.parindex_hi
-#     pos = particles.positions
-#     mom = particles.momenta
-#     for k in parindex_lo:parindex_hi
-#         xj = pos[parindices[k]]
-#         pj = mom[parindices[k]]
-#         K = kernel_relativity(x, xj, pj)
-#         efield += sqrt(1.0 + dot(pj, pj))*K
-#         bfield += cross(pj, K)
-#     end
-#     return efield, bfield
-# end

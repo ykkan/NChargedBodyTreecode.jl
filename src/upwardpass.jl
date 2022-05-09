@@ -22,14 +22,13 @@ end
 deposite the momentum and gamma of one particle (with position `pos` and momentum `mom`)
 to a group of macro-particles `mp`
 """
-function deposit!(mp::MacroParticles{T}, pos::SVector{3,T}, mom::SVector{3,T}) where {T}
+function deposit!(mp::MacroParticles{T}, pos::SVector{3,T}, gamma::T, mom::SVector{3,T}) where {T}
     x, y, z = pos
     weights_x = weight(x, mp.xcoords)
     weights_y = weight(y, mp.ycoords)
     weights_z = weight(z, mp.zcoords)
 
     n = length(mp.xcoords) - 1
-    gamma = sqrt(1.0 + dot(mom, mom))
     for k in 1:(n + 1)
         for j in 1:(n + 1)
             for i in 1:(n + 1)
@@ -48,24 +47,29 @@ function P2M!(cluster::Cluster{T}, particles::Particles{T}, parindices::Vector{I
     hi = cluster.parindex_hi
     for i = lo:hi
         pindex = parindices[i]
-        deposit!(cluster.macroparticles, pos[pindex], mom[pindex])
+        x = pos[pindex]
+        p = mom[pindex]
+        ga = sqrt(1.0 + dot(p,p))
+        deposit!(cluster.macroparticles, x, ga, p)
     end
 end
 
 function M2M!(parent::Cluster{T}, child::Cluster{T}) where {T}
-    n = length(parent.macroparticles.xcoords) - 1
     child_xcoords = child.macroparticles.xcoords
     child_ycoords = child.macroparticles.ycoords
     child_zcoords = child.macroparticles.zcoords
+    child_gammas = child.macroparticles.gammas
     child_momenta = child.macroparticles.momenta
+    n = length(child_xcoords) - 1
     for k in 1:(n+1)
         for j in 1:(n+1)
             for i in 1:(n+1)
                 x = child_xcoords[i]
                 y = child_ycoords[j]
                 z = child_zcoords[k]
+                ga = child_gammas[i,j,k]
                 p = child_momenta[i,j,k]
-                deposit!(parent.macroparticles, SVector(x,y,z), p)
+                deposit!(parent.macroparticles, SVector(x,y,z), ga, p)
             end
         end
     end

@@ -2,11 +2,9 @@ module NChargedBodyTreecode
     using StaticArrays
     using LinearAlgebra
 
-    export cheb2
-
     export Particles
     export MacroParticles
-    export ClusterTree, num_cluster
+    export ClusterTree
 
     export updateParticlesField!
     export BruteForce, TreecodeUniform, TreecodeStretch, TreecodeAvgRestFrame

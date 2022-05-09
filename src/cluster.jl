@@ -66,84 +66,84 @@ function subdivide(particles::Particles{T}, parindices::Vector{Int}, lo, hi, lev
 end
 
 
-function cluster_coord(bbox::BBox{T}; n) where {T}
-    # transform chebpts to [0,1]
-    chebpts_shifted = [ (cos(pi * i / n) + 1.0) / 2.0 for i in 0:n]
-    xmin, ymin, zmin = bbox.bmin
-    xmax, ymax, zmax = bbox.bmax
-    xcoords = chebpts_shifted .* (xmax - xmin) .+ xmin
-    ycoords = chebpts_shifted .* (ymax - ymin) .+ ymin
-    zcoords = chebpts_shifted .* (zmax - zmin) .+ zmin
-    return xcoords, ycoords, zcoords
-end
+# function cluster_coord(bbox::BBox{T}; n) where {T}
+#     # transform chebpts to [0,1]
+#     chebpts_shifted = [ (cos(pi * i / n) + 1.0) / 2.0 for i in 0:n]
+#     xmin, ymin, zmin = bbox.bmin
+#     xmax, ymax, zmax = bbox.bmax
+#     xcoords = chebpts_shifted .* (xmax - xmin) .+ xmin
+#     ycoords = chebpts_shifted .* (ymax - ymin) .+ ymin
+#     zcoords = chebpts_shifted .* (zmax - zmin) .+ zmin
+#     return xcoords, ycoords, zcoords
+# end
 
-function cluster_weight(particles::Particles, parindices::Vector{Int}, lo, hi, bbox::BBox{T}; n) where {T}
-    pos = particles.positions
-    mom = particles.momenta
-    bmin = bbox.bmin
-    bmax = bbox.bmax
-    chebpts = [cos(pi * i / n) for i in 0:n]
-    w = [(-1.0)^(j) for j in 0:n]
-    w[1] = 0.5
-    w[n + 1] = 0.5 * (-1.0)^n
-    diffx = zeros(n + 1)
-    diffy = zeros(n + 1)
-    diffz = zeros(n + 1)
-    ax = zeros(n + 1)
-    ay = zeros(n + 1)
-    az = zeros(n + 1)
-    sum_x = 0.0
-    sum_y = 0.0
-    sum_z = 0.0
-    gamma_hat = zeros(n + 1, n + 1, n + 1)
-    mom_hat  = fill(SVector(0.0, 0.0, 0.0), (n + 1, n + 1, n + 1))
-    for i = lo:hi
-        parindex = parindices[i]
-        x, y, z = (pos[parindex] - bmin) ./ (bmax - bmin) * 2 .- 1.0
-        diffx .= (x .- chebpts)
-        diffy .= (y .- chebpts)
-        diffz .= (z .- chebpts)
-        indx = findfirst(x -> abs(x) < eps(0.0), diffx)
-        indy = findfirst(x -> abs(x) < eps(0.0), diffy)
-        indz = findfirst(x -> abs(x) < eps(0.0), diffz)
-        if indx === nothing
-            ax .= w ./ diffx
-            sum_x = sum(ax)
-        else
-            ax .= 0.0
-            ax[indx] = 1.0
-            sum_x = 1.0
-        end
-        if indy === nothing
-            ay .= w ./ diffy
-            sum_y = sum(ay)
-        else
-            ay .= 0.0
-            ay[indy] = 1.0
-            sum_y = 1.0
-        end
-        if indz === nothing
-            az .= w ./ diffz
-            sum_z = sum(az)
-        else
-            az .= 0.0
-            az[indz] = 1.0
-            sum_z = 1.0
-        end
-        p = mom[parindex]
-        gamma = sqrt(1.0 + dot(p, p))
-        for k in 1:(n + 1)
-            for j in 1:(n + 1)
-                for i in 1:(n + 1)
-                    weight = ax[i] * ay[j] * az[k] / (sum_x * sum_y * sum_z)
-                    gamma_hat[i,j,k] += gamma * weight
-                    mom_hat[i,j,k] += p * weight
-                end
-            end
-        end
-    end
-    return gamma_hat, mom_hat
-end
+# function cluster_weight(particles::Particles, parindices::Vector{Int}, lo, hi, bbox::BBox{T}; n) where {T}
+#     pos = particles.positions
+#     mom = particles.momenta
+#     bmin = bbox.bmin
+#     bmax = bbox.bmax
+#     chebpts = [cos(pi * i / n) for i in 0:n]
+#     w = [(-1.0)^(j) for j in 0:n]
+#     w[1] = 0.5
+#     w[n + 1] = 0.5 * (-1.0)^n
+#     diffx = zeros(n + 1)
+#     diffy = zeros(n + 1)
+#     diffz = zeros(n + 1)
+#     ax = zeros(n + 1)
+#     ay = zeros(n + 1)
+#     az = zeros(n + 1)
+#     sum_x = 0.0
+#     sum_y = 0.0
+#     sum_z = 0.0
+#     gamma_hat = zeros(n + 1, n + 1, n + 1)
+#     mom_hat  = fill(SVector(0.0, 0.0, 0.0), (n + 1, n + 1, n + 1))
+#     for i = lo:hi
+#         parindex = parindices[i]
+#         x, y, z = (pos[parindex] - bmin) ./ (bmax - bmin) * 2 .- 1.0
+#         diffx .= (x .- chebpts)
+#         diffy .= (y .- chebpts)
+#         diffz .= (z .- chebpts)
+#         indx = findfirst(x -> abs(x) < eps(0.0), diffx)
+#         indy = findfirst(x -> abs(x) < eps(0.0), diffy)
+#         indz = findfirst(x -> abs(x) < eps(0.0), diffz)
+#         if indx === nothing
+#             ax .= w ./ diffx
+#             sum_x = sum(ax)
+#         else
+#             ax .= 0.0
+#             ax[indx] = 1.0
+#             sum_x = 1.0
+#         end
+#         if indy === nothing
+#             ay .= w ./ diffy
+#             sum_y = sum(ay)
+#         else
+#             ay .= 0.0
+#             ay[indy] = 1.0
+#             sum_y = 1.0
+#         end
+#         if indz === nothing
+#             az .= w ./ diffz
+#             sum_z = sum(az)
+#         else
+#             az .= 0.0
+#             az[indz] = 1.0
+#             sum_z = 1.0
+#         end
+#         p = mom[parindex]
+#         gamma = sqrt(1.0 + dot(p, p))
+#         for k in 1:(n + 1)
+#             for j in 1:(n + 1)
+#                 for i in 1:(n + 1)
+#                     weight = ax[i] * ay[j] * az[k] / (sum_x * sum_y * sum_z)
+#                     gamma_hat[i,j,k] += gamma * weight
+#                     mom_hat[i,j,k] += p * weight
+#                 end
+#             end
+#         end
+#     end
+#     return gamma_hat, mom_hat
+# end
 
 
 function print_bbox(cluster::Cluster{T}) where {T}

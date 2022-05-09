@@ -34,7 +34,7 @@ function updateParticlesField!(particles::Particles{T}, alg::TreecodeStretch{T};
     amp = 2.8179403699772166e-15 * q / lambda
     @inbounds for i in 1:particles.npar
         x = particles.positions[i]
-        (efield, bfield) = cluster2p(x, ct.root, particles, ct.parindices; p_kernel=p_avg, n=n, eta=eta, stretch=stretch)
+        (efield, bfield) = cluster2p(x, ct.root, particles, ct.parindices; p_kernel=p_avg, eta=eta, stretch=stretch)
         particles.self_efields[i] = amp * efield
         particles.self_bfields[i] = amp * bfield
     end
@@ -50,7 +50,7 @@ function updateParticlesField!(particles::Particles{T}, alg::TreecodeUniform{T};
     amp = 2.8179403699772166e-15 * q / lambda
     @inbounds for i in 1:particles.npar
         x = particles.positions[i]
-        (efield, bfield) = cluster2p(x, ct.root, particles, ct.parindices; p_kernel=p_avg, n=n, eta=eta)
+        (efield, bfield) = cluster2p(x, ct.root, particles, ct.parindices; p_kernel=p_avg, eta=eta)
         particles.self_efields[i] = amp * efield
         particles.self_bfields[i] = amp * bfield
     end
@@ -72,7 +72,7 @@ function updateParticlesField!(particles::Particles{T}, alg::TreecodeAvgRestFram
     amp = 2.8179403699772166e-15 * q / lambda
     @inbounds for i in 1:particles.npar
         x = particles.positions[i]
-        (efield, bfield) = cluster2p(x, ct.root, particles, ct.parindices; p_kernel=SVector(0.0,0.0,0.0), n=n, eta=eta)
+        (efield, bfield) = cluster2p(x, ct.root, particles, ct.parindices; p_kernel=SVector(0.0,0.0,0.0), eta=eta)
         particles.self_efields[i] = amp * efield
         particles.self_bfields[i] = amp * bfield
     end

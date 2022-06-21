@@ -3,7 +3,8 @@ module NChargedBodyTreecode
     using LinearAlgebra
 
     export Particles
-    export ClusterTree, num_cluster
+    export MacroParticles
+    export ClusterTree
 
     export updateParticlesField!
     export BruteForce, TreecodeUniform, TreecodeStretch, TreecodeAvgRestFrame
@@ -14,11 +15,14 @@ module NChargedBodyTreecode
 
     export relerror
 
+    include("utils.jl")
     include("algorithm.jl")
     include("particles.jl")
+    include("macroparticles.jl")
     include("cluster.jl")
     include("cluster_tree.jl")
     include("cluster2p.jl")
+    include("upwardpass.jl")
     include("update_particles_field.jl")
     include("force_kernel.jl")
     include("relativity.jl")

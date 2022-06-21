@@ -72,4 +72,8 @@ efield = beam.self_efields[i]
 bfield = beam.self_bfields[i]
 ```
 
- More details can found in the demo file from `examples/`.
+ More details can found in the demo file from `examples/`
+
+ # Reference
+ Y.-K. Kan, F. X. Kärtner, S. L. Borne, and J.-P. M. Zemke, “Relativistic Space-Charge Field Calculation by Interpolation-Based Treecode.” arXiv, Jun. 06, 2022. Accessed: Jun. 21, 2022. [Online]. Available: [https://doi.org/10.48550/arXiv.2206.02833](https://doi.org/10.48550/arXiv.2206.02833)
+  

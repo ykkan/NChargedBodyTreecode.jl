@@ -5,8 +5,8 @@ struct Particles{T,V <: AbstractVector{SVector{3,T}}}
     mass::T
     positions::V
     momenta::V
-    self_efields::V
-    self_bfields::V
+    efields::V
+    bfields::V
 end
 
 # general interface for creating particle bunch
@@ -29,6 +29,9 @@ function Particles(pos::Matrix{T}, mom::Matrix{T}; charge=-1.0, mass=1.0) where 
     mom_new = reinterpret(reshape, SVector{3,T}, mom)
     return Particles(npar, charge, mass, pos_new, mom_new, reinterpret(reshape, SVector{3,T}, zeros(3, npar)), reinterpret(reshape, SVector{3,T}, zeros(3, npar)))
 end
+
+# type alias for Particles
+const Beam{T} = Particles{T}
 
 function output(beam::Particles, fname)
     pos = beam.positions

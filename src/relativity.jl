@@ -46,8 +46,8 @@ to the inertial frame moving with the momentum `fp`.
 """
 function transformParticlesField!(beam::Particles, fp::SVector{3, T}) where {T}
     fg = sqrt(1.0 + dot(fp, fp))
-    efields = beam.self_efields
-    bfields = beam.self_bfields
+    efields = beam.efields
+    bfields = beam.bfields
     @inbounds for i in 1:beam.npar
       efield_f, bfield_f = transformEMField(efields[i], bfields[i], fg, fp)
       efields[i] = efield_f

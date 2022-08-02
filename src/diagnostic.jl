@@ -6,8 +6,8 @@ Compute the relative error of particle field from `beam1` comparing to `beam2`.
 function relerror(beam1::Particles, beam2::Particles)
     beam1.npar == beam2.npar || error("npar mismatches")
     npar = beam1.npar
-    efield_error = relerror(beam1.self_efields, beam2.self_efields, npar)
-    bfield_error = relerror(beam1.self_bfields, beam2.self_bfields, npar)
+    efield_error = relerror(beam1.efields, beam2.efields, npar)
+    bfield_error = relerror(beam1.bfields, beam2.bfields, npar)
     return max(efield_error, bfield_error)
 end
 

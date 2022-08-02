@@ -75,6 +75,6 @@ bfield = beam.bfields[i]
  More details can found in the demo file from `examples/`
 
  # Reference
- Y.-K. Kan, F. X. Kärtner, S. L. Borne, and J.-P. M. Zemke, “Relativistic Space-Charge Field Calculation by Interpolation-Based Treecode”, submitted
+ Y.-K. Kan, F. X. Kärtner, S. Le Borne, and J.-P. M. Zemke, “Relativistic Space-Charge Field Calculation by Interpolation-Based Treecode”, submitted
  [https://doi.org/10.48550/arXiv.2206.02833](https://doi.org/10.48550/arXiv.2206.02833)
   

@@ -12,7 +12,7 @@ momenta = zeros(3, N)
 momenta[3, :] .= 29.9833287
 
 # create a particle beam in which each particle's charge and mass are -1 and 1
-beam = Particles(; pos=positions, mom=momenta, charge=-1.0, mass=1.0)
+beam = Beam(; pos=positions, mom=momenta, charge=-1.0, mass=1.0)
 
 # create 4 copies of a particle beam
 beam0 = deepcopy(beam)

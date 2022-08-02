@@ -8,16 +8,16 @@ function updateParticlesField!(particles::Particles{T}, alg::BruteForce; lambda)
     q = particles.charge
     npar = particles.npar
     @inbounds for i in 1:npar
-        particles.self_efields[i] = SVector(0.0, 0.0, 0.0)
-        particles.self_bfields[i] = SVector(0.0, 0.0, 0.0)
+        particles.efields[i] = SVector(0.0, 0.0, 0.0)
+        particles.bfields[i] = SVector(0.0, 0.0, 0.0)
         xi = particles.positions[i]
         amp = 2.8179403699772166e-15 * q / lambda
         for j in 1:npar
             xj = particles.positions[j]
             pj = particles.momenta[j]
             K = kernel_relativity(xi, xj, pj)
-            particles.self_efields[i] += amp * sqrt(1.0 + dot(pj, pj)) * K
-            particles.self_bfields[i] += amp * cross(pj, K)
+            particles.efields[i] += amp * sqrt(1.0 + dot(pj, pj)) * K
+            particles.bfields[i] += amp * cross(pj, K)
         end
     end
 end
@@ -35,8 +35,8 @@ function updateParticlesField!(particles::Particles{T}, alg::TreecodeStretch{T};
     @inbounds for i in 1:particles.npar
         x = particles.positions[i]
         (efield, bfield) = cluster2p(x, ct.root, particles, ct.parindices; p_kernel=p_avg, eta=eta, stretch=stretch)
-        particles.self_efields[i] = amp * efield
-        particles.self_bfields[i] = amp * bfield
+        particles.efields[i] = amp * efield
+        particles.bfields[i] = amp * bfield
     end
 end
 
@@ -51,8 +51,8 @@ function updateParticlesField!(particles::Particles{T}, alg::TreecodeUniform{T};
     @inbounds for i in 1:particles.npar
         x = particles.positions[i]
         (efield, bfield) = cluster2p(x, ct.root, particles, ct.parindices; p_kernel=p_avg, eta=eta)
-        particles.self_efields[i] = amp * efield
-        particles.self_bfields[i] = amp * bfield
+        particles.efields[i] = amp * efield
+        particles.bfields[i] = amp * bfield
     end
 end
 
@@ -73,8 +73,8 @@ function updateParticlesField!(particles::Particles{T}, alg::TreecodeAvgRestFram
     @inbounds for i in 1:particles.npar
         x = particles.positions[i]
         (efield, bfield) = cluster2p(x, ct.root, particles, ct.parindices; p_kernel=SVector(0.0,0.0,0.0), eta=eta)
-        particles.self_efields[i] = amp * efield
-        particles.self_bfields[i] = amp * bfield
+        particles.efields[i] = amp * efield
+        particles.bfields[i] = amp * bfield
     end
 
     # transform particle distribution and field back to the lab-frame

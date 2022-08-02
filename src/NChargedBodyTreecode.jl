@@ -2,7 +2,7 @@ module NChargedBodyTreecode
     using StaticArrays
     using LinearAlgebra
 
-    export Particles
+    export Particles, Beam
     export MacroParticles
     export ClusterTree
 

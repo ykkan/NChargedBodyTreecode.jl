@@ -9,12 +9,12 @@ This package provides treecode algorithms for calculating the relativistic space
 # Installation
 The package can be installed using Julia's REPL
 ```julia
-julia> using pkg
-julia> pkg.add("https://github.com/ykkan/NChargedBodyTreecode.git.git")
+julia> import Pkg
+julia> Pkg.add(url="https://github.com/ykkan/NChargedBodyTreecode.git")
 ```
 or with Pkg mode (hitting `]` in the command prompt)
 ```julia
-pkg> add("https://github.com/ykkan/NChargedBodyTreecode.git") 
+pkg> add https://github.com/ykkan/NChargedBodyTreecode.git
 ```
 
 # Usage
@@ -64,16 +64,17 @@ error1 = relerror(beam1, beam0)
 error2 = relerror(beam2, beam0)
 error3 = relerror(beam3, beam0)
 ```
-The space-charge field (both E- and B-field) of `beam` is stored in `beam.self_efields` and `beam.self_bfields` (both have a type `Vector{SVector{3,T}}`, see [StaticArrays](https://github.com/JuliaArrays/StaticArrays.jl) for more details).
+The space-charge field (both E- and B-field) of `beam` is stored in `beam.efields` and `beam.bfields` (both have a type `Vector{SVector{3,T}}`, see [StaticArrays](https://github.com/JuliaArrays/StaticArrays.jl) for more details).
 
 After the update of space-charge field of `beam`, the space-charge field on i-th particle can be accessed by, for example
 ```julia
-efield = beam.self_efields[i]
-bfield = beam.self_bfields[i]
+efield = beam.efields[i]
+bfield = beam.bfields[i]
 ```
 
  More details can found in the demo file from `examples/`
 
  # Reference
- Y.-K. Kan, F. X. Kärtner, S. L. Borne, and J.-P. M. Zemke, “Relativistic Space-Charge Field Calculation by Interpolation-Based Treecode.” arXiv, Jun. 06, 2022. Accessed: Jun. 21, 2022. [Online]. Available: [https://doi.org/10.48550/arXiv.2206.02833](https://doi.org/10.48550/arXiv.2206.02833)
+ Y.-K. Kan, F. X. Kärtner, S. Le Borne, and J.-P. M. Zemke, “Relativistic Space-Charge Field Calculation by Interpolation-Based Treecode”, submitted
+ [https://doi.org/10.48550/arXiv.2206.02833](https://doi.org/10.48550/arXiv.2206.02833)
   

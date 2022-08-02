@@ -1,4 +1,3 @@
-
 """
     relerror(beam1::Particles, beam2::Particles)
 

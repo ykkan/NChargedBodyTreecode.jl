@@ -2,7 +2,7 @@
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6464509.svg)](https://doi.org/10.5281/zenodo.6464509)
 
-by Yi-Kai Kan (<yikai.kan@desy.de>)
+by Yi-Kai Kan (<tw.ykkan@gmail.com>)
 
 This package provides treecode algorithms for calculating the relativistic space-charge field. The treeocodes are implemented based on the tensor-product interpolation with Lagragian polynomials.
 

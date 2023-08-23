@@ -9,6 +9,8 @@ module NChargedBodyTreecode
     export updateParticlesField!
     export BruteForce, TreecodeUniform, TreecodeStretch, TreecodeAvgRestFrame
 
+    export move!
+    
     export boostParticlesPosition!
     export transformParticlesMomentums!
     export transtransformParticlesField!
@@ -24,6 +26,7 @@ module NChargedBodyTreecode
     include("cluster2p.jl")
     include("upwardpass.jl")
     include("update_particles_field.jl")
+    include("move.jl")
     include("force_kernel.jl")
     include("relativity.jl")
     include("diagnostic.jl")

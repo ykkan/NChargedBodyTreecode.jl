@@ -23,8 +23,6 @@ function move!(particles::Particles{T}, dt::T, alg::A; lambda::T) where {A, T}
         particles.momenta[i] = p_plus + 0.5 * dt * (q / m) * efield
     end
 
-    println("$(particles.momenta[1])")
-
     @inbounds for i in 1:npar
         p = particles.momenta[i]
         particles.positions[i] += 0.5 * dt * p / sqrt(1.0 + dot(p, p))
